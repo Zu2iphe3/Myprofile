@@ -4,6 +4,9 @@ Spyder Editor
 
 This is a temporary script file.
 """
+
+
+
 #import streamlit as st 
 #st.title("Streamlit is amazing!")
 #st.title("Never use spaces in folder names")
@@ -18,34 +21,44 @@ This is a temporary script file.
 
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 
-img_file_buffer = st.camera_input("Take a picture")
+st.markdown('<h1 style="color: navy;">Academic Profile</h1>', unsafe_allow_html=True)
 
-if img_file_buffer is not None:
-    # To read image file buffer as bytes:
-    bytes_data = img_file_buffer.getvalue()
-    # Check the type of bytes_data:
-    # Should output: <class 'bytes'>
-    st.write(type(bytes_data))
-    
+#The sidebar organizes the app by allowing users to switch between different sections (like "Researcher Overview," "Publications," etc.) through a radio button.
+st.sidebar.header("Navigation")
+selected_section = st.sidebar.radio("Go to", ["Researcher Overview","Publications", "Contact Information"])
+
+st.markdown("---")
 # Title of the app
-st.title("Researcher Profile Page")
+#st.title("Academic Profile")
 
 # Collect basic information
 name = "Zusiphe Mzazela"
 field = "MSc Med Bioinformatics"
-focus = "Machine Learning"
+focus = "Machine Learning, Epigenetics, and Cancer Informatics"
 institution = "University of Cape Town"
 
+if selected_section == "Researcher Overview":
+    st.header("Researcher Overview")
+    st.write(f"**Name:** {name}")
+    st.write(f"**Field of Research:** {field}")
+    st.write(f"**Areas of Expertise:** {focus}")
+    st.write(f"**Institution:** {institution}")
+
 # Display basic profile information
-st.header("Researcher Overview")
-st.write(f"**Name:** {name}")
-st.write(f"**Field of Research:** {field}")
-st.write(f"**Specialisation:** {focus}")
-st.write(f"**Institution:** {institution}")
+#st.header("Researcher Overview")
+#st.write(f"**Name:** {name}")
+#st.write(f"**Field of Research:** {field}")
+#st.write(f"**Specialisation:** {focus}")
+#st.write(f"**Institution:** {institution}")
 
 # Add a section for publications
-st.header("Publications")
+#st.header("Publications")
+#uploaded_file = st.file_uploader("Upload a CSV of Publications", type="csv")
+
+# Add a section for publications
+st.markdown('<h3 style="color: teal;">Publications 📄</h3>', unsafe_allow_html=True)
 uploaded_file = st.file_uploader("Upload a CSV of Publications", type="csv")
  
 if uploaded_file:
@@ -63,16 +76,39 @@ if uploaded_file:
     else:
         st.write("Showing all publications")
 
-# Add a section for visualizing publication trends
-st.header("Publication Trends")
-if uploaded_file:
-    if "Year" in publications.columns:
-        year_counts = publications["Year"].value_counts().sort_index()
-        st.bar_chart(year_counts)
-    else:
-        st.write("The CSV does not have a 'Year' column to visualize trends.")
+# Mock Feature Importance Plot for BRCA Subtype Classification
+if selected_section == "Publications":
+    st.header("Key Feature Contributions for BRCA Subtype Prediction")
 
+    # Example feature names and importance scores
+    features = ["Gene_1", "Gene_2", "Gene_3", "Gene_4", "Gene_5"]
+    importances = [0.25, 0.20, 0.15, 0.30, 0.10]
+
+    # Create a bar plot for feature importances
+    fig, ax = plt.subplots()
+    ax.barh(features, importances, color='teal')
+    ax.set_title("Top Feature Importances for Subtype Prediction")
+    ax.set_xlabel("Importance Score")
+    ax.set_ylabel("Features")
+    st.pyplot(fig)
+    
 # Add a contact section
 st.header("Contact Information")
 email = "mzzzus001@myuct.ac.za"
-st.write(f"You can reach {name} at {email}.")
+#st.write(f"You can reach {name} at {email}.")
+
+
+# Add a unified contact and collaboration section
+st.markdown('<h2 style="color: darkgreen;">📬 Connect & Collaborate</h2>', unsafe_allow_html=True)
+st.write(
+    "Thank you for visiting my academic profile! I am always open to research collaborations, discussions, and insights in **bioinformatics and machine learning in healthcare.** Let's explore groundbreaking ideas together!"
+)
+st.write(f"📧 **Email:** {email}")  # Correct use of the f-string with the placeholder
+
+# Contact form for user engagement
+st.write("📤 Leave a message below if you'd like to connect or share research ideas.")
+with st.form(key="contact_form"):
+    user_message = st.text_area("Your Message for Zusiphe")
+    submit_button = st.form_submit_button(label="Submit")
+    if submit_button:
+        st.success("Thank you for your message! I'll get back to you shortly.")
